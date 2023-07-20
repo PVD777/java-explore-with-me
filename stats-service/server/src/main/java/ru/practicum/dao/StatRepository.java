@@ -10,7 +10,7 @@ import java.util.List;
 
 public interface StatRepository extends JpaRepository<EndpointHit, Integer> {
 
-    @Query("SELECT new ru.practicum.model.ViewStats(h.app, h.uri, count(distinct h.ip)) " +
+    @Query("SELECT new ru.practicum.model.ViewStats(h.app, h.uri, count(DISTINCT(h.ip))) " +
                     "from EndpointHit as h " +
                     "where ((h.timestamp between :start and :end) and h.uri IN :uris) " +
                     "GROUP BY h.app, h.uri " +
