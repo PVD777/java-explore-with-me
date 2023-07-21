@@ -1,7 +1,7 @@
-package ru.practicum.model.mapper;
+package ru.practicum.server.model.mapper;
 
 import ru.practicum.dto.ViewStatsDto;
-import ru.practicum.model.ViewStats;
+import ru.practicum.server.model.ViewStats;
 
 public class ViewStatsMapper {
     public static ViewStatsDto viewStatsDto(ViewStats viewStats) {

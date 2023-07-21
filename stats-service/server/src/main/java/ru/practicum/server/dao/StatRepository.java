@@ -1,9 +1,9 @@
-package ru.practicum.dao;
+package ru.practicum.server.dao;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
-import ru.practicum.model.EndpointHit;
-import ru.practicum.model.ViewStats;
+import ru.practicum.server.model.EndpointHit;
+import ru.practicum.server.model.ViewStats;
 
 import java.time.LocalDateTime;
 import java.util.List;
