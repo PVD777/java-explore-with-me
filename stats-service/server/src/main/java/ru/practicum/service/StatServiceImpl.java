@@ -5,7 +5,6 @@ import org.springframework.stereotype.Service;
 import ru.practicum.dao.StatRepository;
 import ru.practicum.dto.EndpointHitDto;
 import ru.practicum.dto.ViewStatsDto;
-import ru.practicum.model.EndpointHit;
 import ru.practicum.model.ViewStats;
 import ru.practicum.model.mapper.EndpointHitMapper;
 import ru.practicum.model.mapper.ViewStatsMapper;
@@ -27,7 +26,7 @@ public class StatServiceImpl implements StatService {
             throw new ValidationException("Check start and end time");
         }
         List<ViewStats> viewStatsList;
-        if (uris.isEmpty()) {
+        if (uris == null) {
             if (unique) {
                 viewStatsList = statRepository.getAllViewStatsUniqueIp(start, end);
             } else {
@@ -40,13 +39,14 @@ public class StatServiceImpl implements StatService {
                 viewStatsList = statRepository.getViewStats(start, end, uris);
             }
         }
-        return viewStatsList.stream()
+        List<ViewStatsDto> listDto = viewStatsList.stream()
                 .map(ViewStatsMapper::viewStatsDto)
                 .collect(Collectors.toList());
+        return listDto;
     }
 
     @Override
     public void createEndpointHit(EndpointHitDto endpointHitDto) {
-        EndpointHit endpointHit = statRepository.save(EndpointHitMapper.dtoToHit(endpointHitDto));
+        statRepository.save(EndpointHitMapper.dtoToHit(endpointHitDto));
     }
 }
