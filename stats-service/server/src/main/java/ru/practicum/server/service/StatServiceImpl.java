@@ -26,23 +26,14 @@ public class StatServiceImpl implements StatService {
             throw new ValidationException("Check start and end time");
         }
         List<ViewStats> viewStatsList;
-        if (uris == null) {
-            if (unique) {
-                viewStatsList = statRepository.getAllViewStatsUniqueIp(start, end);
-            } else {
-                viewStatsList = statRepository.getAllViewStats(start, end);
-            }
+        if (unique) {
+            viewStatsList = statRepository.getViewStatsUniqueIp(start, end, uris);
         } else {
-            if (unique) {
-                viewStatsList = statRepository.getViewStatsUniqueIp(start, end, uris);
-            } else {
-                viewStatsList = statRepository.getViewStats(start, end, uris);
-            }
+            viewStatsList = statRepository.getViewStats(start, end, uris);
         }
-        List<ViewStatsDto> listDto = viewStatsList.stream()
+        return viewStatsList.stream()
                 .map(ViewStatsMapper::viewStatsDto)
                 .collect(Collectors.toList());
-        return listDto;
     }
 
     @Override
