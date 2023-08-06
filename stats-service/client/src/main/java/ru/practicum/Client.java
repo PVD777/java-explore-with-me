@@ -10,7 +10,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import ru.practicum.dto.EndpointHitDto;
 
 import java.util.List;
 import java.util.Map;
@@ -28,7 +27,7 @@ public class Client {
                 .build();
     }
 
-
+/*
     public ResponseEntity<Object> saveHit(EndpointHitDto endpointHitDto) {
         return post("/hit", endpointHitDto);
     }
@@ -41,7 +40,7 @@ public class Client {
                 "unique", unique
         );
         return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
-    }
+    }*/
 
     public ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
         return makeAndSendRequest(HttpMethod.GET, path, parameters, null);
