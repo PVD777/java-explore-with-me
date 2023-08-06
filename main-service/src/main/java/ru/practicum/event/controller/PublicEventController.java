@@ -24,7 +24,7 @@ public class PublicEventController {
     private final EventService eventService;
 
 
-    //НЕДОПИСАН
+
     @GetMapping
     public List<EventShortDto> search(
             @RequestParam(value = "text", required = false) String text,
