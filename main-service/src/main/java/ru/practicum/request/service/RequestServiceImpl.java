@@ -20,8 +20,12 @@ import ru.practicum.user.model.User;
 import javax.validation.ValidationException;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
+import java.util.Collections;
+import java.util.Collection;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 @Service
@@ -75,56 +79,65 @@ public class RequestServiceImpl implements RequestService {
 
     @Override
     public EventRequestStatusUpdateResult updateRequests(int userId, int eventId, EventRequestStatusUpdateRequest updatedRequest) {
+        EventRequestStatusUpdateResult result = new EventRequestStatusUpdateResult();
+
         if (!userRepository.existsById(userId)) {
             throw new ObjectNotFoundException("User не найден");
         }
         Event event = eventRepository.findById(eventId)
                 .orElseThrow(() -> new ObjectNotFoundException("Event не найден"));
-
-        if (event.getConfirmedRequest() >= event.getParticipantLimit()) {
-            throw new ValidationException("Limit reached");
-        }
-
         List<Request> requests = requestRepository.findByIdIn(updatedRequest.getRequestIds());
-        List<Request> confirmed = new ArrayList<>();
-        List<Request> rejected = new ArrayList<>();
-        for (Request request : requests) {
-            if (request.getStatus() == RequestStatus.PENDING) {
-                if (event.getParticipantLimit() == 0) {
-                    request.setStatus(RequestStatus.CONFIRMED);
-                    event.setConfirmedRequest(event.getConfirmedRequest() + 1);
-                } else if (event.getParticipantLimit() > event.getConfirmedRequest()) {
-                    if (!event.getRequestModeration()) {
-                        request.setStatus(RequestStatus.CONFIRMED);
-                        event.setConfirmedRequest(event.getConfirmedRequest() + 1);
-                    } else {
-                        if (updatedRequest.getStatus() == RequestStatus.CONFIRMED) {
-                            request.setStatus(RequestStatus.CONFIRMED);
-                            event.setConfirmedRequest(event.getConfirmedRequest() + 1);
-                        } else {
-                            request.setStatus(RequestStatus.REJECTED);
-                        }
-                    }
-                } else {
-                    request.setStatus(RequestStatus.REJECTED);
-                }
-            } else {
-                throw new ValidationException("request status not waiting");
-            }
-
-            if (request.getStatus().equals((RequestStatus.CONFIRMED))) {
-                confirmed.add(request);
-            } else {
-                rejected.add(request);
-            }
+        if ((!event.getRequestModeration() || event.getParticipantLimit() == 0)
+                && (updatedRequest.getStatus() == RequestStatus.CONFIRMED)) {
+            result.setConfirmedRequests(requests.stream()
+                    .map(RequestMapper::toParticipationRequestDto)
+                    .collect(Collectors.toList())
+            );
+            result.setRejectedRequests(Collections.emptyList());
+            return result;
         }
-        eventRepository.save(event);
-        return new EventRequestStatusUpdateResult(confirmed.stream()
+
+        final AtomicInteger vacancyLeft = new AtomicInteger(event.getParticipantLimit()
+                - requestRepository.countByEventIdAndStatus(eventId, RequestStatus.CONFIRMED));
+
+        if (vacancyLeft.get() <= 0) {
+            throw new ValidationException("Request limit");
+        }
+
+        List<Request> confirmedRequests = new ArrayList<>();
+        List<Request> rejectedRequests = new ArrayList<>();
+
+        requests.forEach(request -> {
+            if (!request.getStatus().equals(RequestStatus.PENDING)) {
+                throw new ValidationException("Проверить event status");
+            }
+            if (updatedRequest.getStatus().equals(RequestStatus.CONFIRMED) && vacancyLeft.get() > 0) {
+                request.setStatus(RequestStatus.CONFIRMED);
+                confirmedRequests.add(request);
+                vacancyLeft.decrementAndGet();
+            } else {
+                request.setStatus(RequestStatus.REJECTED);
+                rejectedRequests.add(request);
+            }
+        });
+
+        List<Request> allRequests = Stream.of(confirmedRequests, rejectedRequests)
+                .flatMap(Collection::stream)
+                .collect(Collectors.toList());
+
+        if (!allRequests.isEmpty()) {
+            requestRepository.saveAll(allRequests);
+        }
+
+        result.setConfirmedRequests(confirmedRequests.stream()
                 .map(RequestMapper::toParticipationRequestDto)
-                .collect(Collectors.toList()),
-                rejected.stream()
-                        .map(RequestMapper::toParticipationRequestDto)
-                        .collect(Collectors.toList()));
+                .collect(Collectors.toList()));
+
+        result.setRejectedRequests(rejectedRequests.stream()
+                .map(RequestMapper::toParticipationRequestDto)
+                .collect(Collectors.toList()));
+
+        return result;
     }
 
     Request createNewRequest(Event event, User user) {
@@ -132,13 +145,9 @@ public class RequestServiceImpl implements RequestService {
         request.setCreated(LocalDateTime.now());
         request.setEvent(event);
         request.setRequester(user);
-        if (!event.getRequestModeration() || event.getParticipantLimit() == 0) {
-            request.setStatus(RequestStatus.CONFIRMED);
-            event.setConfirmedRequest(event.getConfirmedRequest() + 1);
-            eventRepository.save(event);
-        } else {
-            request.setStatus(RequestStatus.PENDING);
-        }
+        request.setStatus((!event.getRequestModeration() || event.getParticipantLimit() == 0) ?
+                RequestStatus.CONFIRMED : RequestStatus.PENDING
+        );
         return request;
     }
 

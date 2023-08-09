@@ -43,7 +43,6 @@ public class Event {
     @Column(name = "published_on")
     @DateTimeFormat(pattern =  "yyyy-MM-dd HH:mm:ss")
     LocalDateTime publishedOn;
-    @Embedded
     @AttributeOverride(name = "lat", column = @Column(name = "latitude"))
     @AttributeOverride(name = "lon", column = @Column(name = "longitude"))
     Location location;

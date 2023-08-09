@@ -4,6 +4,7 @@ import com.fasterxml.jackson.annotation.JsonFormat;
 import lombok.*;
 import lombok.experimental.FieldDefaults;
 
+import javax.validation.constraints.PositiveOrZero;
 import javax.validation.constraints.Size;
 import java.time.LocalDateTime;
 
@@ -27,7 +28,7 @@ public class UpdateEventRequest {
     Location location;
 
     Boolean paid;
-
+    @PositiveOrZero
     Integer participantLimit;
 
     Boolean requestModeration;

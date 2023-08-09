@@ -5,10 +5,7 @@ import lombok.*;
 import lombok.experimental.FieldDefaults;
 import ru.practicum.event.model.Location;
 
-import javax.validation.constraints.Future;
-import javax.validation.constraints.NotBlank;
-import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
+import javax.validation.constraints.*;
 import java.time.LocalDateTime;
 
 @FieldDefaults(level = AccessLevel.PRIVATE)
@@ -32,6 +29,7 @@ public class NewEventDto {
     @NotNull
     Location location;
     boolean paid = false;
+    @PositiveOrZero
     int participantLimit = 0;
     boolean requestModeration = true;
     @NotBlank

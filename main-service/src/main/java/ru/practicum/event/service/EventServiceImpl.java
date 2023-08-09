@@ -4,8 +4,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
-import org.springframework.http.HttpStatus;
-import org.springframework.http.ResponseEntity;
+
 import org.springframework.stereotype.Service;
 import ru.practicum.category.dao.CategoryRepository;
 import ru.practicum.category.model.Category;
@@ -18,7 +17,6 @@ import ru.practicum.exceptions.BadRequestException;
 import ru.practicum.exceptions.ObjectNotFoundException;
 import ru.practicum.request.dao.RequestRepository;
 import ru.practicum.request.model.Pair;
-import ru.practicum.request.model.Request;
 import ru.practicum.stat.StatService;
 import ru.practicum.user.dao.UserRepository;
 import ru.practicum.user.model.User;
