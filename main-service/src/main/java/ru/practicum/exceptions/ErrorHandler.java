@@ -10,6 +10,7 @@ import org.springframework.web.bind.annotation.RestControllerAdvice;
 
 import javax.validation.ConstraintViolationException;
 import javax.validation.ValidationException;
+import java.time.LocalDateTime;
 
 @Slf4j
 @RestControllerAdvice
@@ -22,6 +23,7 @@ public class ErrorHandler {
         return ApiError
                 .builder()
                 .status(HttpStatus.NOT_FOUND)
+                .timestamp(LocalDateTime.now())
                 .reason("Data not found exception")
                 .message(e.getMessage())
                 .build();
@@ -34,6 +36,7 @@ public class ErrorHandler {
         return ApiError
                 .builder()
                 .status(HttpStatus.BAD_REQUEST)
+                .timestamp(LocalDateTime.now())
                 .reason("Bad request")
                 .message(e.getMessage())
                 .build();
@@ -46,6 +49,7 @@ public class ErrorHandler {
         return ApiError
                 .builder()
                 .status(HttpStatus.BAD_REQUEST)
+                .timestamp(LocalDateTime.now())
                 .reason("Missed request parameters")
                 .message(e.getMessage())
                 .build();
@@ -58,6 +62,7 @@ public class ErrorHandler {
         return ApiError
                 .builder()
                 .status(HttpStatus.BAD_REQUEST)
+                .timestamp(LocalDateTime.now())
                 .reason("Method argument not valid")
                 .message(e.getMessage())
                 .build();
@@ -71,6 +76,7 @@ public class ErrorHandler {
         return ApiError
                 .builder()
                 .status(HttpStatus.CONFLICT)
+                .timestamp(LocalDateTime.now())
                 .reason("Validation exception")
                 .message(e.getMessage())
                 .build();
@@ -83,6 +89,7 @@ public class ErrorHandler {
         return ApiError
                 .builder()
                 .status(HttpStatus.CONFLICT)
+                .timestamp(LocalDateTime.now())
                 .reason("Validation exception")
                 .message(e.getMessage())
                 .build();
@@ -95,7 +102,8 @@ public class ErrorHandler {
         return ApiError
                 .builder()
                 .status(HttpStatus.INTERNAL_SERVER_ERROR)
-                .reason("ALARM!ALARM!")
+                .timestamp(LocalDateTime.now())
+                .reason("ALARM!ALARM!" + e.getClass())
                 .message(e.getMessage())
                 .build();
     }

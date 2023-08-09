@@ -17,6 +17,7 @@ import ru.practicum.exceptions.BadRequestException;
 import ru.practicum.exceptions.ObjectNotFoundException;
 import ru.practicum.request.dao.RequestRepository;
 import ru.practicum.request.model.Pair;
+import ru.practicum.request.model.RequestStatus;
 import ru.practicum.stat.StatService;
 import ru.practicum.user.dao.UserRepository;
 import ru.practicum.user.model.User;
@@ -84,17 +85,19 @@ public class EventServiceImpl implements EventService {
                     break;
             }
 
+        } else {
+            pageable = PageRequest.of(from,size);
         }
-        pageable = PageRequest.of(from,size);
         List<Event> events = eventRepository.searchPublic(text, categories, paid, rangeStart, rangeEnd, pageable);
         Map<Integer, Long> confirmedRequests = getConfirmedRequests(events);
         Map<Integer, Long> views = getViews(events);
         statsService.saveHit(request);
-        return events.stream()
+        List<EventShortDto> shortDto = events.stream()
                 .map(event -> {
                     Integer eventId = event.getId();
                     return EventMapper.eventToShortDto(event, confirmedRequests.get(eventId), views.get(eventId));
                 }).collect(Collectors.toList());
+        return shortDto;
     }
 
     @Override

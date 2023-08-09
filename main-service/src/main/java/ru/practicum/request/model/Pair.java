@@ -10,6 +10,6 @@ import lombok.Setter;
 @AllArgsConstructor
 @NoArgsConstructor
 public class Pair {
-    private Integer id;
+    private int id;
     private Long hit;
 }

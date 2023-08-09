@@ -37,10 +37,12 @@ public class CategoryServiceImpl implements CategoryService {
     public CategoryDto update(int categoryId, CategoryDto categoryDto) {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ObjectNotFoundException("Category not found"));
+        validate(categoryDto);
         if (!category.getName().equals(categoryDto.getName())) {
             category.setName(categoryDto.getName());
         }
-        return CategoryMapper.categoryToDto(category);
+        Category savedCategory = categoryRepository.save(category);
+        return CategoryMapper.categoryToDto(savedCategory);
     }
 
     @Override
@@ -49,6 +51,12 @@ public class CategoryServiceImpl implements CategoryService {
             throw new ValidationException("Категория занята");
         }
         categoryRepository.findById(categoryId).ifPresent(categoryRepository::delete);
+    }
+
+    private void validate(CategoryDto categoryDto) {
+        if (categoryRepository.findByName(categoryDto.getName()).isPresent()) {
+            throw new ValidationException("category name conflict");
+        }
     }
 
     @Override

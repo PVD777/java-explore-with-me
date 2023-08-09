@@ -29,13 +29,13 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     List<Request> findByUserIdAndEventId(int userId, int eventId);
 
     @Query(
-            "SELECT new ru.practicum.request.model.Pair(request.event.id, COUNT(request.id)) " +
-            "FROM Request request " +
-            "WHERE (:eventIds IS NULL OR :eventIds in request.event.id) " +
-            "AND (request.status = ru.practicum.request.model.RequestStatus.CONFIRMED) " +
-            "GROUP BY request.event.id"
+            "SELECT new ru.practicum.request.model.Pair(r.event.id, COUNT((r.id))) " +
+            "FROM Request r " +
+            "WHERE (r.event.id IN :eventIds) " +
+            "AND (r.status = ru.practicum.request.model.RequestStatus.CONFIRMED) " +
+            "GROUP BY r.event.id"
     )
     List<Pair> findByEventIdInAndStatusConfirmed(List<Integer> eventIds);
 
-    Integer countByEventIdAndStatus(Integer eventId, RequestStatus status);
+    Integer countByEventIdAndStatus(Integer eventIds, RequestStatus status);
 }

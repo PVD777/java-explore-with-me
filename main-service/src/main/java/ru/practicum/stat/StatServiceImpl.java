@@ -29,7 +29,7 @@ public class StatServiceImpl implements StatService {
     private final DateTimeFormatter formatter =
             DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss");
 
-    @Value("{application.name}")
+    @Value("ewm-main-service")
     private String applicationName;
 
     private final String path = "/stats?start={start}&end={end}&uri={uri}&unique={unique}";
