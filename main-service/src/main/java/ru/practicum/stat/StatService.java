@@ -10,5 +10,5 @@ import java.util.Map;
 public interface StatService {
     void saveHit(HttpServletRequest request);
 
-    Map<Integer, Integer> getViews(LocalDateTime start, LocalDateTime end, List<Integer> eventIds, Boolean unique);
+    Map<Integer, Long> getViews(LocalDateTime start, LocalDateTime end, List<Integer> eventIds, Boolean unique);
 }

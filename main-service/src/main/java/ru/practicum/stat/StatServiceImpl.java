@@ -45,8 +45,8 @@ public class StatServiceImpl implements StatService {
     }
 
     @Override
-    public Map<Integer, Integer> getViews(LocalDateTime start, LocalDateTime end, List<Integer> eventIds, Boolean unique) {
-        Map<Integer, Integer> result = new HashMap<>();
+    public Map<Integer, Long> getViews(LocalDateTime start, LocalDateTime end, List<Integer> eventIds, Boolean unique) {
+        Map<Integer, Long> result = new HashMap<>();
         Map<String, Integer> uris = new HashMap<>();
         for (Integer id : eventIds) {
             uris.put("/events/" + id, id);
