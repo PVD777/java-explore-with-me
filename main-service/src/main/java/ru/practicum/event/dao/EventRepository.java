@@ -34,12 +34,10 @@ public interface EventRepository extends JpaRepository<Event, Integer> {
             "OR (:text IS NULL OR LOWER(event.title) LIKE LOWER(CONCAT('%', :text, '%')))) " +
             "AND (:categories is null or event.category.id in :categories)  " +
             "AND (:paid IS NULL OR event.paid = :paid) " +
-            "AND(:onlyAvailable is NULL  OR :onlyAvailable = false " +
-            "OR (:onlyAvailable = true AND event.confirmedRequest < event.participantLimit)) " +
             "AND (event.eventDate BETWEEN COALESCE(:rangeStart, event.eventDate) AND COALESCE(:rangeEnd, event.eventDate)) "
             )
     List<Event> searchPublic(String text, List<Integer> categories, Boolean paid, LocalDateTime rangeStart,
-                             LocalDateTime rangeEnd, Boolean onlyAvailable, Pageable pageable);
+                             LocalDateTime rangeEnd, Pageable pageable);
 }
 
 

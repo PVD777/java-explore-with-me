@@ -16,7 +16,7 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
     @Query("SELECT COUNT(request) FROM Request request WHERE " +
             "request.status = ru.practicum.request.model.RequestStatus.CONFIRMED " +
             "AND request.event.id = :eventId")
-    Integer countByEventIdAndStatus(int eventId);
+    Long countByEventIdAndStatus(int eventId);
 
     List<Request> findByIdIn(List<Integer> requestIds);
 
@@ -30,10 +30,10 @@ public interface RequestRepository extends JpaRepository<Request, Integer> {
 
     @Query(
             "SELECT new ru.practicum.request.model.Pair(request.event.id, COUNT(request.id)) " +
-                    "FROM Request request " +
-                    "WHERE (:eventIds IS NULL OR :eventIds in request.event.id) " +
-                    "   AND (request.status = ru.practicum.request.model.RequestStatus.CONFIRMED) " +
-                    "GROUP BY request.event.id"
+            "FROM Request request " +
+            "WHERE (:eventIds IS NULL OR :eventIds in request.event.id) " +
+            "AND (request.status = ru.practicum.request.model.RequestStatus.CONFIRMED) " +
+            "GROUP BY request.event.id"
     )
     List<Pair> findByEventIdInAndStatusConfirmed(List<Integer> eventIds);
 

@@ -47,12 +47,12 @@ public class EventMapper {
             eventFullDto.setPublishedOn(event.getPublishedOn());
             eventFullDto.setLocation(event.getLocation());
             eventFullDto.setRequestModeration(event.getRequestModeration());
-            eventFullDto.setConfirmedRequests(0);
+            eventFullDto.setConfirmedRequests(0L);
             eventFullDto.setViews(0);
             return eventFullDto;
         }
 
-    public EventFullDto eventToFullDto(Event event, Integer confirmedRequests, Integer views) {
+    public EventFullDto eventToFullDto(Event event, Long confirmedRequests, Integer views) {
         EventFullDto eventFullDto = new EventFullDto();
         eventFullDto.setId(event.getId());
         eventFullDto.setTitle(event.getTitle());
@@ -86,12 +86,12 @@ public class EventMapper {
             eventShortDto.setInitiator(UserMapper.userToShortDto(event.getInitiator()));
             eventShortDto.setPaid(event.getPaid());
             eventShortDto.setTitle(event.getTitle());
-            eventShortDto.setConfirmedRequests(0);
+            eventShortDto.setConfirmedRequests(0L);
             eventShortDto.setViews(0);
             return eventShortDto;
         }
 
-    public EventShortDto eventToShortDto(Event event, Integer confirmedRequests, Integer views) {
+    public EventShortDto eventToShortDto(Event event, Long confirmedRequests, Integer views) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(event.getId());
         eventShortDto.setAnnotation(event.getAnnotation());

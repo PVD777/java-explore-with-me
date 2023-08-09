@@ -42,7 +42,7 @@ public class EventServiceImpl implements EventService {
     @Override
     public List<EventFullDto> searchEvents(List<Integer> users, List<EventState> states, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable) {
         List<Event> events = eventRepository.searchByAdmin(users, states, categories, rangeStart, rangeEnd, pageable);
-        Map<Integer, Integer> confirmedRequests = getConfirmedRequests(events);
+        Map<Integer, Long> confirmedRequests = getConfirmedRequests(events);
         Map<Integer, Integer> views = getViews(events);
         return events.stream()
                 .map(event -> {
@@ -86,8 +86,8 @@ public class EventServiceImpl implements EventService {
 
         }
         pageable = PageRequest.of(from,size);
-        List<Event> events = eventRepository.searchPublic(text, categories, paid, rangeStart, rangeEnd, onlyAvailable, pageable);
-        Map<Integer, Integer> confirmedRequests = getConfirmedRequests(events);
+        List<Event> events = eventRepository.searchPublic(text, categories, paid, rangeStart, rangeEnd, pageable);
+        Map<Integer, Long> confirmedRequests = getConfirmedRequests(events);
         Map<Integer, Integer> views = getViews(events);
         statsService.saveHit(request);
         return events.stream()
@@ -105,7 +105,7 @@ public class EventServiceImpl implements EventService {
             throw new ObjectNotFoundException("Event не опубликован");
         }
         Integer views = getViews(event);
-        Integer confirmedRequests = requestRepository.countByEventIdAndStatus(eventId);
+        Long confirmedRequests = requestRepository.countByEventIdAndStatus(eventId);
         statsService.saveHit(request);
         return EventMapper.eventToFullDto(event, confirmedRequests, views);
     }
@@ -122,7 +122,7 @@ public class EventServiceImpl implements EventService {
         Event event = eventRepository.findByIdAndInitiatorId(eventId, initiatorId)
                 .orElseThrow(() -> new ObjectNotFoundException("Event не найден"));
         Integer views = getViews(event);
-        Integer confirmedRequests = requestRepository.countByEventIdAndStatus(eventId);
+        Long confirmedRequests = requestRepository.countByEventIdAndStatus(eventId);
         return EventMapper.eventToFullDto(event, confirmedRequests, views);
     }
 
@@ -251,7 +251,7 @@ public class EventServiceImpl implements EventService {
     }
 
 
-    private Map<Integer, Integer> getConfirmedRequests(List<Event> events) {
+    private Map<Integer, Long> getConfirmedRequests(List<Event> events) {
         if ((events == null) || (events.isEmpty())) return new HashMap<>();
 
         List<Pair> confirmedRequestsList = requestRepository.findByEventIdInAndStatusConfirmed(

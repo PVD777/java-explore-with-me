@@ -169,7 +169,7 @@ public class RequestServiceImpl implements RequestService {
             throw new ValidationException("Event не в стадии published");
         }
 
-        int countByEventIdAndStatus = requestRepository.countByEventIdAndStatus(eventId);
+        Long countByEventIdAndStatus = requestRepository.countByEventIdAndStatus(eventId);
 
         if ((participantLimit != 0)
                 && (countByEventIdAndStatus >= participantLimit)) {
