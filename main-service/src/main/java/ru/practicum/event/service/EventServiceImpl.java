@@ -17,7 +17,6 @@ import ru.practicum.exceptions.BadRequestException;
 import ru.practicum.exceptions.ObjectNotFoundException;
 import ru.practicum.request.dao.RequestRepository;
 import ru.practicum.request.model.Pair;
-import ru.practicum.request.model.RequestStatus;
 import ru.practicum.stat.StatService;
 import ru.practicum.user.dao.UserRepository;
 import ru.practicum.user.model.User;
