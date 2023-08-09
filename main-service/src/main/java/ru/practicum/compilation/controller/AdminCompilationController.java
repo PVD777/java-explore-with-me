@@ -27,7 +27,6 @@ public class AdminCompilationController {
     }
 
     @PatchMapping("/{compId}")
-    @ResponseStatus(HttpStatus.OK)
     public CompilationDto updateCompilation(@PathVariable int compId,
                                             @RequestBody @Validated(Update.class) NewCompilationDto compilationDto) {
         log.debug("Обновить информацию о подборке");

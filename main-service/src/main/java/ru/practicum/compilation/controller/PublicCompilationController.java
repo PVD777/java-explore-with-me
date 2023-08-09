@@ -3,6 +3,7 @@ package ru.practicum.compilation.controller;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.compilation.model.dto.CompilationDto;
 import ru.practicum.compilation.service.CompilationService;
@@ -15,6 +16,7 @@ import java.util.List;
 @RestController
 @AllArgsConstructor
 @RequestMapping("/compilations")
+@Validated
 public class PublicCompilationController {
 
     private final CompilationService compilationService;

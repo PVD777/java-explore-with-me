@@ -33,7 +33,6 @@ public class AdminCategoryController {
     }
 
     @PatchMapping("{categoryId}")
-    @ResponseStatus(HttpStatus.OK)
     CategoryDto update(@PathVariable int categoryId, @Valid @RequestBody CategoryDto categoryDto) {
         log.debug("Изменение категории");
         return categoryService.update(categoryId, categoryDto);

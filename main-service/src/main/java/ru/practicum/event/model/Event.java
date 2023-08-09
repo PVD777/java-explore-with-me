@@ -29,10 +29,6 @@ public class Event {
     @Column(name = "event_date")
     @DateTimeFormat(pattern =  "yyyy-MM-dd HH:mm:ss")
     LocalDateTime eventDate;
-    @Column(name = "confirmed_request")
-    Integer confirmedRequest;
-    @Column
-    Integer views;
     @ManyToOne
     @JoinColumn(name = "initiator_id")
     User initiator;

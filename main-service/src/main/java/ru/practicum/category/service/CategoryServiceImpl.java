@@ -23,7 +23,6 @@ public class CategoryServiceImpl implements CategoryService {
 
     @Override
     public CategoryDto create(CategoryDto categoryDto) {
-        validate(categoryDto);
         Category savedCategory = categoryRepository.save(CategoryMapper.dtoToCategory(categoryDto));
         return CategoryMapper.categoryToDto(savedCategory);
     }
@@ -39,7 +38,6 @@ public class CategoryServiceImpl implements CategoryService {
         Category category = categoryRepository.findById(categoryId)
                 .orElseThrow(() -> new ObjectNotFoundException("Category not found"));
         if (!category.getName().equals(categoryDto.getName())) {
-            validate(categoryDto);
             category.setName(categoryDto.getName());
         }
         return CategoryMapper.categoryToDto(category);
@@ -58,11 +56,5 @@ public class CategoryServiceImpl implements CategoryService {
         return categoryRepository.findAll(pageable).stream()
                 .map(CategoryMapper::categoryToDto)
                 .collect(Collectors.toList());
-    }
-
-    private void validate(CategoryDto categoryDto) {
-        if (categoryRepository.findByName(categoryDto.getName()).isPresent()) {
-            throw new ValidationException("category name conflict");
-        }
     }
 }

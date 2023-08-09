@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.http.HttpStatus;
+import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import ru.practicum.event.model.UpdateEventRequest;
 import ru.practicum.event.model.dto.EventFullDto;
@@ -22,6 +23,7 @@ import java.util.List;
 
 @Slf4j
 @RestController
+@Validated
 @RequestMapping("/users/{userId}/events")
 @RequiredArgsConstructor
 public class PrivateEventController {

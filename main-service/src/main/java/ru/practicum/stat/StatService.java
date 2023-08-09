@@ -3,10 +3,12 @@ package ru.practicum.stat;
 import org.springframework.http.ResponseEntity;
 
 import javax.servlet.http.HttpServletRequest;
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Map;
 
 public interface StatService {
-    ResponseEntity<Object> saveHit(HttpServletRequest request);
+    void saveHit(HttpServletRequest request);
 
-    ResponseEntity<Object> getStatsWithUris(String start, String end, List<String> uris, boolean unique);
+    Map<Integer, Integer> getViews(LocalDateTime start, LocalDateTime end, List<Integer> eventIds, Boolean unique);
 }

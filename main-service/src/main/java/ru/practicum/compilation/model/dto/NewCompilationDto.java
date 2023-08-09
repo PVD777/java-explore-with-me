@@ -17,8 +17,8 @@ import ru.practicum.compilation.model.dto.Validated.*;
 public class NewCompilationDto {
 
     List<Integer> events;
-    Boolean pinned = Boolean.FALSE;
     @NotNull(groups = {Create.class})
+    Boolean pinned = Boolean.FALSE;
     @NotBlank(groups = {Create.class})
     @Size(min = 2, max = 50, groups = {Create.class, Update.class})
     String title;

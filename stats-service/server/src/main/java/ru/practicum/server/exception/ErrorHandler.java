@@ -31,6 +31,7 @@ public class ErrorHandler {
     @ExceptionHandler
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMethodArgumentNotValidException(final MethodArgumentNotValidException exception) {
+        log.error(exception.getMessage());
         return new ErrorResponse(exception.getMessage());
     }
 
@@ -38,7 +39,7 @@ public class ErrorHandler {
     @ResponseStatus(HttpStatus.BAD_REQUEST)
     public ErrorResponse handleMissingServletRequestParameterException(
             final MissingServletRequestParameterException exception) {
-
+        log.error(exception.getMessage());
         return new ErrorResponse(exception.getMessage());
     }
 

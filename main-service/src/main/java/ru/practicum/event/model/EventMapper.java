@@ -17,8 +17,6 @@ public class EventMapper {
             Event event = new Event();
             event.setAnnotation(newEventDto.getAnnotation());
             event.setCategory(category);
-            event.setViews(0);
-            event.setConfirmedRequest(0);
             event.setCreatedOn(LocalDateTime.now());
             event.setDescription(newEventDto.getDescription());
             event.setEventDate(newEventDto.getEventDate());
@@ -49,10 +47,35 @@ public class EventMapper {
             eventFullDto.setPublishedOn(event.getPublishedOn());
             eventFullDto.setLocation(event.getLocation());
             eventFullDto.setRequestModeration(event.getRequestModeration());
-            eventFullDto.setConfirmedRequests(event.getConfirmedRequest() == null ? 0 : event.getConfirmedRequest());
-            eventFullDto.setViews((event.getViews() == null ? 0 : event.getViews()));
+            eventFullDto.setConfirmedRequests(0);
+            eventFullDto.setViews(0);
             return eventFullDto;
         }
+
+    public EventFullDto eventToFullDto(Event event, Integer confirmedRequests, Integer views) {
+        EventFullDto eventFullDto = new EventFullDto();
+        eventFullDto.setId(event.getId());
+        eventFullDto.setTitle(event.getTitle());
+        eventFullDto.setAnnotation(event.getAnnotation());
+        eventFullDto.setCategory(CategoryMapper.categoryToDto(event.getCategory()));
+        eventFullDto.setPaid(event.getPaid());
+        eventFullDto.setEventDate(event.getEventDate());
+        eventFullDto.setInitiator(UserMapper.userToShortDto(event.getInitiator()));
+        eventFullDto.setDescription(event.getDescription());
+        eventFullDto.setParticipantLimit(event.getParticipantLimit());
+        eventFullDto.setState(event.getState());
+        eventFullDto.setCreatedOn(event.getCreatedOn());
+        eventFullDto.setPublishedOn(event.getPublishedOn());
+        eventFullDto.setLocation(event.getLocation());
+        eventFullDto.setRequestModeration(event.getRequestModeration());
+        if (confirmedRequests != null) {
+            eventFullDto.setConfirmedRequests(confirmedRequests);
+        }
+        if (views != null) {
+            eventFullDto.setViews(views);
+        }
+        return eventFullDto;
+    }
 
         public EventShortDto eventToShortDto(Event event) {
             EventShortDto eventShortDto = new EventShortDto();
@@ -63,9 +86,27 @@ public class EventMapper {
             eventShortDto.setInitiator(UserMapper.userToShortDto(event.getInitiator()));
             eventShortDto.setPaid(event.getPaid());
             eventShortDto.setTitle(event.getTitle());
-            eventShortDto.setConfirmedRequests(event.getConfirmedRequest() == null ? 0 : event.getConfirmedRequest());
-            eventShortDto.setViews((event.getViews() == null ? 0 : event.getViews()));
+            eventShortDto.setConfirmedRequests(0);
+            eventShortDto.setViews(0);
             return eventShortDto;
         }
+
+    public EventShortDto eventToShortDto(Event event, Integer confirmedRequests, Integer views) {
+        EventShortDto eventShortDto = new EventShortDto();
+        eventShortDto.setId(event.getId());
+        eventShortDto.setAnnotation(event.getAnnotation());
+        eventShortDto.setCategory(CategoryMapper.categoryToDto(event.getCategory()));
+        eventShortDto.setEventDate(event.getEventDate());
+        eventShortDto.setInitiator(UserMapper.userToShortDto(event.getInitiator()));
+        eventShortDto.setPaid(event.getPaid());
+        eventShortDto.setTitle(event.getTitle());
+        if (confirmedRequests != null) {
+            eventShortDto.setConfirmedRequests(confirmedRequests);
+        }
+        if (views != null) {
+            eventShortDto.setViews(views);
+        }
+        return eventShortDto;
+    }
 
 }

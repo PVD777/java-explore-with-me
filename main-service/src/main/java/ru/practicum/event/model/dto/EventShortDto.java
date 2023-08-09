@@ -23,6 +23,6 @@ public class EventShortDto {
     UserShortDto initiator;
     boolean paid;
     String title;
-    int confirmedRequests;
-    int views;
+    Integer confirmedRequests;
+    Integer views;
 }
