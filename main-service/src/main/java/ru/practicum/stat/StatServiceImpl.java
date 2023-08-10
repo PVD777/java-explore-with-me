@@ -59,7 +59,6 @@ public class StatServiceImpl implements StatService {
         );
         ResponseEntity<Object> responseEntity = statsClient.get(path, parameters);
         List<ViewStatsDto> statsDtoList = toViewStatsDtoList(responseEntity);
-        System.out.println("statsDtoList" + statsDtoList);
 
         for (ViewStatsDto statsDto : statsDtoList) {
             Integer eventId = uris.get(statsDto.getUri());

@@ -269,9 +269,8 @@ public class EventServiceImpl implements EventService {
     private Map<Integer, Long> getViews(List<Event> events) {
         if ((events == null) || (events.isEmpty())) return new HashMap<>();
 
-        List<Event> sortedEvents = events.stream()
-                .sorted(Comparator.comparing(Event::getPublishedOn)).collect(Collectors.toList());
-        LocalDateTime start = sortedEvents.get(0).getPublishedOn();
+        //List<Event> sortedEvents = events.stream().sorted(Comparator.comparing(Event::getPublishedOn)).collect(Collectors.toList());
+        LocalDateTime start = events.stream().min((Comparator.comparing(Event::getPublishedOn))).get().getPublishedOn(); //sortedEvents.get(0).getPublishedOn();
 
         return statsService.getViews(start, LocalDateTime.now(),
                 events.stream().map(Event::getId).collect(Collectors.toList()), true);
