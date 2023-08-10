@@ -10,7 +10,6 @@ import org.springframework.web.client.HttpStatusCodeException;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.web.util.DefaultUriBuilderFactory;
 import org.springframework.http.client.HttpComponentsClientHttpRequestFactory;
-import ru.practicum.dto.EndpointHitDto;
 
 import java.util.List;
 import java.util.Map;
@@ -26,21 +25,6 @@ public class Client {
                 .uriTemplateHandler(new DefaultUriBuilderFactory(serverUrl))
                 .requestFactory(HttpComponentsClientHttpRequestFactory::new)
                 .build();
-    }
-
-
-    public ResponseEntity<Object> saveHit(EndpointHitDto endpointHitDto) {
-        return post("/hit", endpointHitDto);
-    }
-
-    public ResponseEntity<Object> getStatsWithUris(String start, String end, String[] uris, boolean unique) {
-        Map<String, Object> parameters = Map.of(
-                "start", start,
-                "end", end,
-                "uris", uris,
-                "unique", unique
-        );
-        return get("/stats?start={start}&end={end}&uris={uris}&unique={unique}", parameters);
     }
 
     public ResponseEntity<Object> get(String path, @Nullable Map<String, Object> parameters) {
