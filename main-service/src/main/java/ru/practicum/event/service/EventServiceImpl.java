@@ -8,6 +8,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import ru.practicum.category.dao.CategoryRepository;
 import ru.practicum.category.model.Category;
+import ru.practicum.comments.dao.CommentRepository;
+import ru.practicum.comments.model.CommentCount;
 import ru.practicum.event.dao.EventRepository;
 import ru.practicum.event.model.*;
 import ru.practicum.event.model.dto.EventFullDto;
@@ -39,15 +41,19 @@ public class EventServiceImpl implements EventService {
 
     private final StatService statsService;
 
+    private final CommentRepository commentRepository;
+
     @Override
     public List<EventFullDto> searchEvents(List<Integer> users, List<EventState> states, List<Integer> categories, LocalDateTime rangeStart, LocalDateTime rangeEnd, Pageable pageable) {
         List<Event> events = eventRepository.searchByAdmin(users, states, categories, rangeStart, rangeEnd, pageable);
         Map<Integer, Long> confirmedRequests = getConfirmedRequests(events);
         Map<Integer, Long> views = getViews(events);
+        Map<Integer, Long> comments = getComments(events);
         return events.stream()
                 .map(event -> {
                     Integer eventId = event.getId();
-                    return EventMapper.eventToFullDto(event, confirmedRequests.get(eventId), views.get(eventId));
+                    return EventMapper.eventToFullDto(event, confirmedRequests.get(eventId),
+                            views.get(eventId), comments.get(eventId));
                 }).collect(Collectors.toList());
     }
 
@@ -90,11 +96,13 @@ public class EventServiceImpl implements EventService {
         List<Event> events = eventRepository.searchPublic(text, categories, paid, rangeStart, rangeEnd, pageable);
         Map<Integer, Long> confirmedRequests = getConfirmedRequests(events);
         Map<Integer, Long> views = getViews(events);
+        Map<Integer, Long> comments = getComments(events);
         statsService.saveHit(request);
         List<EventShortDto> shortDto = events.stream()
                 .map(event -> {
                     Integer eventId = event.getId();
-                    return EventMapper.eventToShortDto(event, confirmedRequests.get(eventId), views.get(eventId));
+                    return EventMapper.eventToShortDto(event, confirmedRequests.get(eventId), views.get(eventId),
+                            comments.get(eventId));
                 }).collect(Collectors.toList());
         return shortDto;
     }
@@ -108,8 +116,9 @@ public class EventServiceImpl implements EventService {
         }
         Long views = getViews(event);
         Long confirmedRequests = requestRepository.countByEventIdAndStatus(eventId);
+        Long comments = getComments(List.of(event)).get(0);
         statsService.saveHit(request);
-        return EventMapper.eventToFullDto(event, confirmedRequests, views);
+        return EventMapper.eventToFullDto(event, confirmedRequests, views, comments);
     }
 
     @Override
@@ -125,7 +134,8 @@ public class EventServiceImpl implements EventService {
                 .orElseThrow(() -> new ObjectNotFoundException("Event не найден"));
         Long views = getViews(event);
         Long confirmedRequests = requestRepository.countByEventIdAndStatus(eventId);
-        return EventMapper.eventToFullDto(event, confirmedRequests, views);
+        Long comments = getComments(List.of(event)).get(0);
+        return EventMapper.eventToFullDto(event, confirmedRequests, views, comments);
     }
 
     @Override
@@ -268,9 +278,7 @@ public class EventServiceImpl implements EventService {
 
     private Map<Integer, Long> getViews(List<Event> events) {
         if ((events == null) || (events.isEmpty())) return new HashMap<>();
-
-        //List<Event> sortedEvents = events.stream().sorted(Comparator.comparing(Event::getPublishedOn)).collect(Collectors.toList());
-        LocalDateTime start = events.stream().min((Comparator.comparing(Event::getPublishedOn))).get().getPublishedOn(); //sortedEvents.get(0).getPublishedOn();
+        LocalDateTime start = events.stream().min((Comparator.comparing(Event::getPublishedOn))).get().getPublishedOn();
 
         return statsService.getViews(start, LocalDateTime.now(),
                 events.stream().map(Event::getId).collect(Collectors.toList()), true);
@@ -282,6 +290,17 @@ public class EventServiceImpl implements EventService {
         Map<Integer, Long> views = statsService.getViews(event.getPublishedOn(), LocalDateTime.now(),
                 List.of(eventId), true);
         return views.get(eventId);
+    }
+
+    private Map<Integer, Long> getComments(List<Event> events) {
+        if ((events == null) || (events.isEmpty())) return new HashMap<>();
+        List<CommentCount> commentsCountByEvent =  commentRepository.findCommentsByEventIds(events.stream()
+                .map(Event::getId)
+                .collect(Collectors.toList()));
+        return commentsCountByEvent.stream()
+                .collect(Collectors
+                        .toMap(CommentCount::getEventId,
+                                CommentCount::getComments));
     }
 
 

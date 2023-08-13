@@ -25,4 +25,5 @@ public class EventShortDto {
     String title;
     Long confirmedRequests = 0L;
     Long views = 0L;
+    Long commentsCount = 0L;
 }

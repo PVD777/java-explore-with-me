@@ -53,7 +53,7 @@ public class EventMapper {
         return eventFullDto;
     }
 
-    public EventFullDto eventToFullDto(Event event, Long confirmedRequests, Long views) {
+    public EventFullDto eventToFullDto(Event event, Long confirmedRequests, Long views, Long comments) {
         EventFullDto eventFullDto = new EventFullDto();
         eventFullDto.setId(event.getId());
         eventFullDto.setTitle(event.getTitle());
@@ -75,6 +75,9 @@ public class EventMapper {
         if (views != null) {
             eventFullDto.setViews(views);
         }
+        if (comments != null) {
+            eventFullDto.setCommentsCount(comments);
+        }
         return eventFullDto;
     }
 
@@ -92,7 +95,7 @@ public class EventMapper {
         return eventShortDto;
     }
 
-    public EventShortDto eventToShortDto(Event event, Long confirmedRequests, Long views) {
+    public EventShortDto eventToShortDto(Event event, Long confirmedRequests, Long views, Long comments) {
         EventShortDto eventShortDto = new EventShortDto();
         eventShortDto.setId(event.getId());
         eventShortDto.setAnnotation(event.getAnnotation());
@@ -106,6 +109,9 @@ public class EventMapper {
         }
         if (views != null) {
             eventShortDto.setViews(views);
+        }
+        if (comments != null) {
+            eventShortDto.setCommentsCount(comments);
         }
         return eventShortDto;
     }
