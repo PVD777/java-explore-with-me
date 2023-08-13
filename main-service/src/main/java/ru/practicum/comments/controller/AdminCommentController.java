@@ -3,11 +3,9 @@ package ru.practicum.comments.controller;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.PageRequest;
+import org.springframework.http.HttpStatus;
 import org.springframework.validation.annotation.Validated;
-import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import ru.practicum.comments.model.dto.CommentDtoOut;
 import ru.practicum.comments.service.CommentService;
 
@@ -37,5 +35,12 @@ public class AdminCommentController {
                                                 @RequestParam(name = "size", defaultValue = "10") @Positive Integer size) {
         log.debug("Получение комментариев по событиям");
         return commentService.getAllByEventIds(events, PageRequest.of(from, size));
+    }
+
+    @DeleteMapping("/admin/{commentId}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    public void delete(@PathVariable Integer commentId) {
+        log.debug("Удаление комментария Администратором");
+        commentService.deleteByAdmin(commentId);
     }
 }

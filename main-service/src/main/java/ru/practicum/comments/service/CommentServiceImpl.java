@@ -15,6 +15,8 @@ import ru.practicum.user.dao.UserRepository;
 import ru.practicum.user.model.User;
 
 import javax.validation.ValidationException;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -60,9 +62,19 @@ public class CommentServiceImpl implements CommentService {
     }
 
     @Override
+    public void deleteByAdmin(Integer commentId) {
+        if (commentRepository.findById(commentId).isPresent()) {
+            commentRepository.deleteById(commentId);
+        }
+    }
+
+    @Override
     public CommentDtoOut update(Integer userId, Integer commentId, CommentDtoIn commentDtoIn) {
         checkUserExist(userId);
         Comment comment = getCommentById(commentId);
+        if (Duration.between(comment.getCreated(), LocalDateTime.now()).compareTo(Duration.ofHours(2)) > 0) {
+            throw new ValidationException("No more time to edit comment");
+        }
         validateCommentAuthor(userId, comment);
         comment.setText(commentDtoIn.getText());
         return CommentMapper.commentToDto(comment);

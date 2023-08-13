@@ -14,6 +14,7 @@ public interface CommentService {
     CommentDtoOut getAllByUserAndEventId(Integer userId, Integer eventId);
 
     void delete(Integer userId, Integer commentId);
+    void deleteByAdmin(Integer commentId);
 
     CommentDtoOut update(Integer userId, Integer commentId, CommentDtoIn commentDtoIn);
 

@@ -4,6 +4,7 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import ru.practicum.comments.model.Comment;
+import ru.practicum.comments.model.CommentCount;
 
 import java.util.List;
 
@@ -23,4 +24,10 @@ public interface CommentRepository extends JpaRepository<Comment, Integer> {
             "WHERE (:events IS null or comment.event.id in :events)"
     )
     List<Comment> findByEventIdIn(List<Integer> events, Pageable pageable);
+
+    @Query("Select new ru.practicum.comments.model.CommentCount(comment.event.id, COUNT((comment.id))) " +
+            "FROM Comment comment " +
+            "WHERE comment.event.id IN :eventIds " +
+            "GROUP BY comment.event.id")
+    List<CommentCount> findCommentsByEventIds(List<Integer> eventIds);
 }
